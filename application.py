@@ -79,19 +79,6 @@ def update_portfolio(portfolio_id):
     return jsonify({"status": "success", "message": f"Portfolio {portfolio_id} updated with new data."})
 
 
-@app.route('/slow-endpoint')
-def slow_endpoint():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
-    try:
-        response = requests.get(f"{BACKEND_API_BASE}/api/slow-endpoint")
-        result = response.json()
-    except Exception as e:
-        result = {"error": str(e)}
-
-    return result
-
 
 @app.route("/api/portfolio/<portfolio_id>", methods=["DELETE"])
 def delete_portfolio(portfolio_id):
@@ -120,5 +107,10 @@ def list_csv_reports():
         return jsonify({"error": f"Missing environment variable: {str(e)}"}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/slow-endpoint')
+def slow_endpoint():
+    time.sleep(5)
+    return "This was a slow response after 5 seconds"
 
 # IMPORTANT: No app.run() when deploying to Azure Linux App Service
